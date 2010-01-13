@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                layout="absolute"
+                xmlns:local="*"
+                xmlns:controls="org.juicekit.visual.controls.*"
+                xmlns:charts="org.juicekit.charts.*"
+                initialize="init()"
+                >
+
+ <!--
+ This example shows how to reorder data in the grid.
+ -->
+
+  <mx:Script>
+      <![CDATA[
+          import org.juicekit.visual.controls.Styler;
+          public function init():void {
+              Styler.instance.setStyles(
+               // base options
+               // color is "Ingenix brown"
+               { fontFamily: 'Georgia', fontSize: 12, color: '#5F574F' },
+               // header options, use {} to ignore
+               { fontFamily: 'Arial', fontWeight: 'bold'},
+               // notes options, use {} to ignore
+               {},
+               // emphasis options, use {} to ignore
+               { color: '#EE3A42' }
+              );
+          }
+
+          private function filterAge(o:Object, idx:int, arr:Array):Boolean {
+            //return true or false
+            return o.AGE == 32
+          }
+
+          private function createChange(o:Object, index:int, array:Array):void {
+            o['change'] = (o.POP2008-o.POP2000)/ o.POP2000
+          }
+
+      ]]>
+  </mx:Script>
+
+
+  <!-- defines fonts -->
+  <mx:Style source="style.css"/>
+
+  <!-- load data -->
+  <local:DataFromURL
+      id="data"
+      url="http://media.juiceanalytics.com/census/CENSUS_STATEAGESEX.csv"
+      postprocess="createChange"
+      />
+
+  <mx:VBox height="100%" width="100%">
+      <mx:Label text="US Census Data" styleName="jkHeaderEmphasis"/>
+      <mx:DataGrid dataProvider="{data.result}" height="100%" width="50%" styleName="jkBody">
+          <mx:columns>
+              <mx:DataGridColumn dataField="STATE"/>
+              <mx:DataGridColumn dataField="POP2000"/>
+              <mx:DataGridColumn dataField="POP2008"/>
+              <mx:DataGridColumn dataField="change" headerText="% change (2000-2008)"/>
+          </mx:columns>
+      </mx:DataGrid>
+  </mx:VBox>
+
+</mx:Application>

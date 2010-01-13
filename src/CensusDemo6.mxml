@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                layout="absolute"
+                xmlns:local="*"
+                xmlns:controls="org.juicekit.visual.controls.*"
+                xmlns:charts="org.juicekit.charts.*"
+                initialize="init()"
+                xmlns:data="org.juicekit.util.data.*">
+
+ <!--
+ This example shows how to reorder data in the grid.
+ -->
+
+  <mx:Script>
+      <![CDATA[
+          import org.juicekit.visual.controls.Styler;
+          public function init():void {
+              Styler.instance.setStyles(
+               // base options
+               // color is "Ingenix brown"
+               { fontFamily: 'Georgia', fontSize: 12, color: '#5F574F' },
+               // header options, use {} to ignore
+               { fontFamily: 'Arial', fontWeight: 'bold'},
+               // notes options, use {} to ignore
+               {},
+               // emphasis options, use {} to ignore
+               { color: '#EE3A42' }
+              );
+          }
+
+          private function filterAge(o:Object, idx:int, arr:Array):Boolean {
+            //return true or false
+            return o.AGE == 32
+          }
+
+          private function createChange(o:Object, index:int, array:Array):void {
+            o['change'] = (o.POP2008-o.POP2000)/ o.POP2000
+          }
+
+      ]]>
+  </mx:Script>
+
+
+  <!-- defines fonts -->
+  <mx:Style source="style.css"/>
+
+  <!-- load data -->
+  <data:ArrayCollectionFromUrl
+      id="data"
+      url="http://media.juiceanalytics.com/census/CENSUS_STATEAGESEX.csv"
+      />
+      
+      <data:DataArrayCollection dataProvider="{data.result}" id="d"/>
+
+  <mx:HBox height="100%" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+    <mx:VBox width="50%" height="100%">
+      <mx:Label text="Detail" styleName="jkHeaderEmphasis"/>
+      <mx:DataGrid dataProvider="{d}" height="100%" width="100%" styleName="jkBody">
+          <mx:columns>
+              <mx:DataGridColumn dataField="STATE"/>
+              <mx:DataGridColumn dataField="POP2000"/>
+              <mx:DataGridColumn dataField="POP2008"/>
+              <mx:DataGridColumn dataField="change" headerText="% change (2000-2008)"/>
+          </mx:columns>
+      </mx:DataGrid>
+    </mx:VBox>
+    <mx:VBox width="50%" height="100%">
+      <mx:Label text="Chart" styleName="jkHeaderEmphasis"/>
+      <charts:FlareBarChart id="simpleChart"
+                          dataArrayProvider="{d}"
+                          width="80%" 
+                          height="90%"
+                          paddingLeft="50"
+                          valueAxisLabelFormat="#,k"
+                          categoryEncodingField="data.STATE"
+                          valueEncodingField="data.POP2000"
+                          colorEncodingField="data.change"
+                          styleName="jkNotes"/>
+    </mx:VBox>
+  </mx:HBox>
+
+</mx:Application>

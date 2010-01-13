@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                layout="absolute"
+                xmlns:local="*"
+                xmlns:controls="org.juicekit.visual.controls.*"
+                xmlns:charts="org.juicekit.charts.*" xmlns:data="org.juicekit.util.data.*">
+
+  <mx:Script>
+    <![CDATA[
+      import flare.query.methods.*;
+    ]]>
+  </mx:Script>
+
+
+  <!-- Styler defines basic styles:
+
+  defines style names:
+    jkHeader
+    jkBody
+    jkNotes
+    jkEmphasis
+
+  -->
+  <controls:StylerInstance id="styler"/>
+
+  <!-- defines fonts -->
+  <mx:Style source="style.css"/>
+
+  <!-- load data -->  
+  
+  <data:ArrayCollectionFromUrl
+      id="data"
+      url="http://media.juiceanalytics.com/census/CENSUS_STATEAGESEX.csv"
+      />
+
+  <data:LiveQuery id="myQuery" dataProvider="{data.result}" query="{
+    select('STATE', {pop2008: sum('POP2008')})
+    .groupby('STATE').orderby('state')
+  }"/>
+  
+      
+  <mx:VBox height="100%" width="100%">
+      <mx:Label text="US Census Data" styleName="jkHeader"/>
+      <mx:DataGrid dataProvider="{data.result}" height="100%" width="50%" styleName="jkBody"/>
+      <mx:DataGrid dataProvider="{myQuery.result}"/>
+  </mx:VBox>
+
+  
+</mx:Application>

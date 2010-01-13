@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                layout="absolute"
+                xmlns:local="*"
+                xmlns:controls="org.juicekit.visual.controls.*"
+                initialize="init()"
+                xmlns:charts="org.juicekit.charts.*">
+
+  <mx:Script>
+    <![CDATA[
+      import flare.util.Shapes;
+      import flare.vis.data.DataSprite;
+      import flare.vis.operator.encoder.PropertyEncoder;
+      private function ff(o:Object, idx:int, arr:Array):Boolean {
+        //return true
+        return o.AGE == 32
+      }
+
+      private function init():void {
+        simpleChart.extraOperators = [
+//          new PropertyEncoder({filters:[new GlowFilter()]}, 'nodes', function(d:DataSprite):Boolean { return d.data.popdiff > 0.2 }),
+//          new PropertyEncoder({fillColor: 0xff000000, size: 0.2}, 'nodes' , function(d:DataSprite):Boolean { return d.data.SEX == 1 }),
+//          new PropertyEncoder({fillColor: 0xffff0000, w: 10, shape: Shapes.CIRCLE, size: 0.5, filters: [new GlowFilter()]}, 'nodes' , function(d:DataSprite):Boolean { return d.data.SEX == 2 }),
+        ]
+      }
+    ]]>
+  </mx:Script>
+
+  <!-- basic styles -->
+  <controls:StylerInstance id="styler"/>
+
+  <!-- load data -->
+  <local:DataFromURL
+      id="data"
+      url="http://media.juiceanalytics.com/census/CENSUS_STATEAGESEX.csv"
+      filterFunction="ff"
+      postprocess="{function(o:Object, index:int, array:Array):void { o['change'] = (o.POP2008-o.POP2000)/ o.POP2000 }}"
+      />
+
+  <mx:HBox height="100%" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+    <mx:VBox width="50%" height="100%">
+      <mx:Label text="Detail" styleName="jkHeader"/>
+      <mx:DataGrid dataProvider="{data.result}" height="100%" width="100%" styleName="jkNotes"/>
+    </mx:VBox>
+    <mx:VBox width="50%" height="100%">
+      <mx:Label text="Chart" styleName="jkHeader"/>
+      <charts:FlareBarChart id="simpleChart"
+                          data="{data.result}"
+                          width="80%"
+                          height="90%"
+                          paddingLeft="50"
+                          valueAxisLabelFormat="#,k"
+                          categoryEncodingField="STATE"
+                          valueEncodingField="POP2000"
+                          colorEncodingField="change"
+                          styleName="jkNotes"/>
+    </mx:VBox>
+  </mx:HBox>
+
+</mx:Application>

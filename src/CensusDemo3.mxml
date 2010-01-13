@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"
+                layout="absolute"
+                xmlns:local="*"
+                xmlns:controls="org.juicekit.visual.controls.*"
+                xmlns:charts="org.juicekit.charts.*"
+                initialize="init()"
+                >
+
+ <!--
+ This example shows how to filter the data as it is read
+
+ You can also limit the number of rows that are read in.
+ -->
+
+  <mx:Script>
+      <![CDATA[
+          import org.juicekit.visual.controls.Styler;
+          public function init():void {
+              Styler.instance.setStyles(
+               // base options
+               { fontFamily: 'Georgia', fontSize: 14 },
+               // header options, use {} to ignore
+               {},
+               // notes options, use {} to ignore
+               {},
+               // emphasis options, use {} to ignore
+               { color: '#ff0000' }
+              );
+          }
+
+          private function filterAge(o:Object, idx:int, arr:Array):Boolean {
+            //return true or false
+            return o.AGE == 32
+          }
+
+      ]]>
+  </mx:Script>
+
+
+  <!-- defines fonts -->
+  <mx:Style source="style.css"/>
+
+  <!-- load data -->
+  <local:DataFromURL
+      id="data"
+      url="http://media.juiceanalytics.com/census/CENSUS_STATEAGESEX.csv"
+      limit="1000"
+      filterFunction="filterAge"
+      />
+
+  <mx:VBox height="100%" width="100%">
+      <mx:Label text="US Census Data" styleName="jkHeaderEmphasis"/>
+      <mx:DataGrid dataProvider="{data.result}" height="100%" width="50%" styleName="jkBody"/>
+  </mx:VBox>
+
+</mx:Application>
